@@ -6,7 +6,7 @@ project(WAVE_FUNCTION_COLLPASE CXX)
 set(SRCS
 	"${CMAKE_CURRENT_LIST_DIR}/src/printer.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/image_handler.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/wfc.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/src/wfc_bitmap.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/main.cpp"
 )
 
@@ -17,6 +17,7 @@ set(HDRS
 	"${CMAKE_CURRENT_LIST_DIR}/include/wfc.h"
 	"${CMAKE_CURRENT_LIST_DIR}/include/printer.h"
 	"${CMAKE_CURRENT_LIST_DIR}/include/utils.h"
+	"${CMAKE_CURRENT_LIST_DIR}/include/wfc_bitmap.h"
 )
 
 add_executable(wave_function_collapse_executable "${SRCS}" "${HDRS}")
