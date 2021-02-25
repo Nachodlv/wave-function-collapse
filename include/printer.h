@@ -39,9 +39,9 @@ public:
     template <typename T>
     void print_matrix(const std::vector<std::vector<T>>& matrix_to_print, const std::string space_between_columns = "\t") const
     {
-        for (int i = 0; i < matrix_to_print.size(); i++)
+        for (int i = 0; i < matrix_to_print.size(); ++i)
         {
-            for (int k = 0; k < matrix_to_print[i].size(); k++)
+            for (int k = 0; k < matrix_to_print[i].size(); ++k)
             {
                 if (T printable = matrix_to_print[i][k])
                 {

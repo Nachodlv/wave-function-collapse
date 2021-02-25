@@ -9,7 +9,7 @@
 class Tile
 {
 public:
-    Tile(const char character, const ConsoleColors color): character(character), color(color)
+    Tile(char character, const ConsoleColors color): character(character), color(color)
     {
     }
 
@@ -28,7 +28,7 @@ private:
 class TileBitMap
 {
 public :
-    TileBitMap(const unsigned char r, const unsigned char g, const unsigned char b, const unsigned char a):
+    TileBitMap(unsigned char r, unsigned char g, unsigned char b, unsigned char a):
         r(r), g(g), b(b), a(a)
     {
     }
@@ -107,7 +107,7 @@ void wave_function_with_chars()
 }
 
 // FIXME this is not correct, I think
-void from_image_to_tiles(const std::vector<unsigned char>& image, const int width, const int height, std::vector<std::vector<std::shared_ptr<TileBitMap>>>& tiles)
+void from_image_to_tiles(const std::vector<unsigned char>& image, int width, int height, std::vector<std::vector<std::shared_ptr<TileBitMap>>>& tiles)
 {
     for (int i = 0; i < height; ++i)
     {
