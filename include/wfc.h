@@ -28,8 +28,8 @@ struct Vector
 template <typename T>
 struct CompatibleTile
 {
-    const T* tile1;
-    const T* tile2;
+    T tile1;
+    T tile2;
     Vector direction;
 
     bool operator<(const CompatibleTile& rhs) const
@@ -48,8 +48,16 @@ namespace Directions
     const Vector right = {1, 0};
 }
 
+template<class T> struct ptr_less
+{
+    bool operator()(const T* lhs, const T* rhs) const { return *lhs < *rhs; }
+};
+
+template <class T, class G>
+using WfcMap = std::map<const T*, G, ptr_less<T>>;
+
 // FIXME create a constructor for the class
-template <typename T>
+template <class T>
 class Wfc
 {
 public:
@@ -63,8 +71,8 @@ public:
     * @param out_weights how many times the tile is repeated
     */
     void parse_matrix(const std::vector<std::vector<const T*>>& matrix,
-                      OUT std::set<CompatibleTile<T>>& out_compatible_tiles,
-                      OUT std::map<const T*, int>& out_weights) const
+                      OUT std::set<CompatibleTile<const T*>>& out_compatible_tiles,
+                      OUT WfcMap<T, int>& out_weights) const
     {
         const int width = matrix.size();
         for (int i = 0; i < width; ++i)
@@ -92,8 +100,8 @@ public:
     }
 
     template <typename F>
-    void run(std::set<CompatibleTile<T>>& compatible_tiles,
-             std::map<const T*, int>& weights,
+    void run(std::set<CompatibleTile<const T*>>& compatible_tiles,
+             WfcMap<T, int>& weights,
              const Vector& output_size,
              std::vector<std::vector<const T*>>& out_result, F iteration)
     {
@@ -118,8 +126,8 @@ public:
 
 private:
     std::vector<std::vector<std::set<const T*>>> coefficients;
-    std::map<const T*, int> weights;
-    std::set<CompatibleTile<T>> compatible_tiles;
+    WfcMap<T, int> weights;
+    std::set<CompatibleTile<const T*>> compatible_tiles;
     Vector size;
 
     /**
@@ -233,7 +241,7 @@ private:
     void collapse(const Vector& coordinates)
     {
         std::set<const T*>& options = coefficients[coordinates.x][coordinates.y];
-        std::map<const T*, int> current_weights;
+        WfcMap<T, int> current_weights;
         int total_weight = 0;
         for (const T* option : options)
         {
@@ -295,14 +303,13 @@ private:
 
     bool has_compatible_tile(const std::set<const T*>& options, const T* neighbour_option, const Vector& direction)
     {
-        if (!neighbour_option) return false;
-
-        for (CompatibleTile<T> compatible_tile : compatible_tiles)
+        for (CompatibleTile<const T*> compatible_tile : compatible_tiles)
         {
             for (const T* option : options)
             {
-                if (option == compatible_tile.tile1 &&
-                    neighbour_option == compatible_tile.tile2 &&
+                if(!option) continue;
+                if (*option == *compatible_tile.tile1 &&
+                    *neighbour_option == *compatible_tile.tile2 &&
                     compatible_tile.direction == direction)
                 {
                     return true;
