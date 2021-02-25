@@ -8,13 +8,16 @@
 
 #include <iostream>
 
-const std::string ImageHandler::sample_location = "../samples/";
-const std::string ImageHandler::result_location = "../results/";
+namespace
+{
+	constexpr const char* const sample_location = "../samples/";
+	constexpr const char* const result_location = "../results/";
+}
 
 bool ImageHandler::load_image(const std::string& filename, std::vector<unsigned char>& out_image, int& width, int& height)
 {
     int n;
-    unsigned char* data = stbi_load((sample_location + filename).c_str(), &width, &height, &n, 4);
+    unsigned char* data = stbi_load((std::string(sample_location) + filename).c_str(), &width, &height, &n, 4);
     if (data != nullptr)
     {
         out_image = std::vector<unsigned char>(data, data + width * height * 4);
@@ -23,8 +26,8 @@ bool ImageHandler::load_image(const std::string& filename, std::vector<unsigned 
     return (data != nullptr);
 }
 
-bool ImageHandler::write_image(const std::string& filename, const std::vector<unsigned char>& image, const int width, const int height)
+bool ImageHandler::write_image(const std::string& filename, const std::vector<unsigned char>& image, int width, int height)
 {
     return stbi_write_png(
-        (result_location + filename).c_str(), width, height, channel_num, &image[0], width * channel_num);
+        (std::string(result_location) + filename).c_str(), width, height, channel_num, &image[0], width * channel_num);
 }

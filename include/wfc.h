@@ -11,17 +11,21 @@
 // I might need to be this struct to its own file
 struct Vector
 {
+	
+	constexpr Vector() : x(0), y(0) {}
+	constexpr Vector(int inX, int inY) : x(inX), y(inY) {}
+	
     int x;
     int y;
 
-    bool operator<(const Vector& rhs) const
+    friend bool operator<(const Vector& lhs, const Vector& rhs)
     {
-        return std::tie(x, y) < std::tie(rhs.x, rhs.y);
+        return std::tie(lhs.x, lhs.y) < std::tie(rhs.x, rhs.y);
     }
 
-    bool operator==(const Vector& rhs) const
+    friend bool operator==(const Vector& lhs, const Vector& rhs)
     {
-        return x == rhs.x && y == rhs.y;
+        return lhs.x == rhs.x && lhs.y == rhs.y;
     }
 };
 
@@ -42,10 +46,10 @@ struct CompatibleTile
 // FIXME Should be inside an anonymous namespace? What are the pros and cons?
 namespace Directions
 {
-    const Vector up = {0, 1};
-    const Vector left = {-1, 0};
-    const Vector down = {0, -1};
-    const Vector right = {1, 0};
+    constexpr Vector up = {0, 1};
+    constexpr Vector left = {-1, 0};
+    constexpr Vector down = {0, -1};
+    constexpr Vector right = {1, 0};
 }
 
 template<class T> struct ptr_less
@@ -169,9 +173,9 @@ private:
      */
     bool is_fully_collapsed()
     {
-        for (auto row : coefficients)
+        for (const auto& row : coefficients)
         {
-            for (auto cell : row)
+            for (const auto& cell : row)
             {
                 if (cell.size() > 1) return false;
             }
@@ -197,7 +201,7 @@ private:
      */
     Vector min_entropy()
     {
-        float minimum_entropy = -1;
+        float minimum_entropy = -1.0f;
         Vector minimum_entropy_cell{-1, -1};
 
         for (int i = 0; i < size.x; ++i)
@@ -245,7 +249,7 @@ private:
         int total_weight = 0;
         for (const T* option : options)
         {
-            int weight = weights[option];
+            const int weight = weights[option];
             total_weight += weight;
             current_weights.insert({option, weight});
         }
@@ -253,7 +257,7 @@ private:
         for (auto weight_option : current_weights)
         {
             random_weight -= weight_option.second;
-            if (random_weight <= 0)
+            if (random_weight <= 0.0f)
             {
                 options.clear();
                 options.insert(weight_option.first);
@@ -279,7 +283,7 @@ private:
             // iterate through each location immediately adjacent to the current location
             std::vector<Vector> neighbour_directions;
             valid_directions(current_coordinates, size.x, size.y, neighbour_directions);
-            for (Vector& direction : neighbour_directions)
+            for (const Vector& direction : neighbour_directions)
             {
                 const Vector neighbour = {current_coordinates.x + direction.x, current_coordinates.y + direction.y};
                 std::set<const T*>& neighbour_options = coefficients[neighbour.x][neighbour.y];
@@ -307,7 +311,7 @@ private:
         {
             for (const T* option : options)
             {
-                if(!option) continue;
+                if (!option) continue;
                 if (*option == *compatible_tile.tile1 &&
                     *neighbour_option == *compatible_tile.tile2 &&
                     compatible_tile.direction == direction)
@@ -323,7 +327,7 @@ private:
     {
         for (auto row : coefficients)
         {
-            std::vector<const T*> row_collapsed;;
+            std::vector<const T*> row_collapsed;
             for (std::set<const T*> cell_options : row)
             {
                 row_collapsed.push_back(*cell_options.begin());
