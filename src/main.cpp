@@ -18,8 +18,8 @@ public:
     char get_character() const { return character; }
 
 
-    friend bool operator==(const Tile& rhs) const {return character == rhs.get_character();}
-    friend bool operator<(const Tile& rhs) const {return character < rhs.get_character();}
+    friend bool operator==(const Tile& lhs, const Tile& rhs) {return lhs.character == rhs.get_character();}
+    friend bool operator<(const Tile& lhs, const Tile& rhs) {return lhs.character < rhs.get_character();}
 
 private:
     const char character;
@@ -87,7 +87,6 @@ void wave_function_with_chars()
 
 int main()
 {
-    WfcBitmap wfc_bitmap;
-    wfc_bitmap.wave_function_with_bitmaps();
+    wave_function_with_chars();
     return 0;
 }

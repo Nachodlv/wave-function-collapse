@@ -15,8 +15,10 @@ class TileBitMap
     unsigned char b;
     unsigned char a;
 
-    friend bool operator==(const TileBitMap& rhs) const { return r == rhs.r && g == rhs.g && b == rhs.b && a == rhs.a; }
-    friend bool operator<(const TileBitMap& rhs) const { return (r + g + b + a) < (rhs.r + rhs.g + rhs.b + rhs.a); }
+    friend bool operator==(const TileBitMap& lhs, const TileBitMap& rhs) { return lhs.r == rhs.r && lhs.g == rhs.g && lhs.b == rhs.b && lhs.a == rhs.a; }
+    friend bool operator<(const TileBitMap& lhs, const TileBitMap& rhs) { return (lhs.r + lhs.g + lhs.b + lhs.a) < (rhs.r + rhs.g + rhs.b + rhs.a); }
+
+    char sum_pixels() const {return r + g + b + a; }
 
     template<typename F>
     void map(F f)
@@ -28,10 +30,45 @@ class TileBitMap
     }
 };
 
+class TileBitMapGroup
+{
+public:
+    TileBitMapGroup(const std::vector<std::shared_ptr<TileBitMap>> tiles): tiles(tiles) {}
+    const std::vector<std::shared_ptr<TileBitMap>> tiles;
+
+    //TODO make the operators friend
+    bool operator==(const TileBitMapGroup& rhs) const
+    {
+        if(tiles.size() != rhs.tiles.size()) return false;
+        for (int i = 0; i < tiles.size(); ++i)
+        {
+            if(!(*tiles[i].get() == *rhs.tiles[i].get()))
+                return false;
+        }
+        return true;
+    }
+
+    bool operator<(const TileBitMapGroup& rhs) const
+    {
+        return sum_tiles(tiles) < sum_tiles(rhs.tiles);
+    }
+
+    char sum_tiles(const std::vector<std::shared_ptr<TileBitMap>>& tiles) const
+    {
+        char total = 0;
+        for (const auto tile : tiles)
+        {
+            total += tile->sum_pixels();
+        }
+        return total;
+    }
+};
+
 class WfcBitmap
 {
 public:
     void wave_function_with_bitmaps();
+    void wave_function_with_group_bitmaps(int group_size);
 
 private:
     void from_image_to_tiles(const std::vector<unsigned char>& image, int width, int height, std::vector<std::vector<std::shared_ptr<TileBitMap>>>& tiles) const;
