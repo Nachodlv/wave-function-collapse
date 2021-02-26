@@ -1,3 +1,4 @@
+#include <ctime>
 #include <iostream>
 #include <memory>
 
@@ -25,8 +26,6 @@ private:
     const char character;
     const ConsoleColors color;
 };
-
-
 
 void wave_function_with_chars()
 {
@@ -70,7 +69,7 @@ void wave_function_with_chars()
     WfcMap<Tile, int> weights;
     std::vector<std::vector<const Tile*>> result;
     Wfc<Tile> wfc;
-    wfc.parse_matrix(full_input, compatible_tiles, weights);
+    wfc.parse_matrix(complex_input, compatible_tiles, weights);
 
     wfc.run(compatible_tiles, weights, {25, 25}, result,
             [&printer](auto matrix)
@@ -84,9 +83,9 @@ void wave_function_with_chars()
     printer.print_matrix<const Tile*>(result, "  ");
 }
 
-
 int main()
 {
+    srand(time(nullptr));
     wave_function_with_chars();
     return 0;
 }
